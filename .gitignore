@@ -10,7 +10,7 @@ target/
 *.war
 *.ear
 *.iml
-*.log
+*.log*
 
 # Files that are too big for GitHub
 publications.txt

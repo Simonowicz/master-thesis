@@ -1,5 +1,6 @@
 package pl.edu.eiti.pw.mongo;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -7,7 +8,6 @@ import org.springframework.stereotype.Component;
 import pl.edu.eiti.pw.model.BasicDBObjectKey;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
@@ -67,8 +67,10 @@ public class MongoConverter<DOMAIN_OBJECT> {
         for (Method method : domainObject.getClass().getDeclaredMethods()) {
             if (isMethodNameAdderForFieldName(method.getName(), fieldName)) {
                 try {
-                    //TODO: find a way to get all the objects from underlying collection in dbObjectValue
-                    method.invoke(domainObject, dbObjectValue);
+                    BasicDBList dbList = (BasicDBList) dbObjectValue;
+                    for (Object dbSingleItemValue : dbList) {
+                        method.invoke(domainObject, dbSingleItemValue);
+                    }
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 }
@@ -77,7 +79,7 @@ public class MongoConverter<DOMAIN_OBJECT> {
     }
 
     private boolean isMethodNameAdderForFieldName(String methodName, String fieldName) {
-        return methodName.contains("add") && methodName.contains(fieldName.substring(0, fieldName.length() - 2));
+        return methodName.toLowerCase().contains("add") && methodName.toLowerCase().contains(fieldName.substring(0, fieldName.length() - 1));
     }
 
     private Object findAndInvokeGetter(DOMAIN_OBJECT object, String fieldName) {
@@ -89,6 +91,6 @@ public class MongoConverter<DOMAIN_OBJECT> {
     }
 
     private boolean isCollectionsType(Field field) {
-        return field.getType().isAssignableFrom(Collection.class);
+        return Collection.class.isAssignableFrom(field.getType());
     }
 }

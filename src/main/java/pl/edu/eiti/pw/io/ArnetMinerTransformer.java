@@ -49,7 +49,7 @@ public class ArnetMinerTransformer implements InputTransformer {
             if (paper.isComplete()) {
                 paperRepository.save(paper);
                 documentCount++;
-                paper = new Paper();
+                paper.clear();
             }
             line = bufferedReader.readLine();
         }

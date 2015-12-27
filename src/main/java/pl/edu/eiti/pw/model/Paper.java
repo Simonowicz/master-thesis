@@ -92,4 +92,15 @@ public class Paper {
     public void setAbstractOfPaper(String abstractOfPaper) {
         this.abstractOfPaper = abstractOfPaper;
     }
+
+    public void clear() {
+        index = null;
+        title = null;
+        authors.clear();
+        publicationYear = null;
+        publicationVenue = null;
+        references.clear();
+        abstractOfPaper = null;
+        complete = false;
+    }
 }
