@@ -29,6 +29,11 @@ public class PaperRepository {
     @Autowired
     private MongoConverter<Paper> mongoConverter;
 
+    public void insert(Paper paper) {
+        logger.debug("Inserting paper with id: {} into database...", paper.getIndex());
+        dbCollection.insert(mongoConverter.convertToDbObject(paper));
+    }
+
     public void save(Paper paper) {
         logger.debug("Saving paper with id: {} into database...", paper.getIndex());
         dbCollection.save(mongoConverter.convertToDbObject(paper));

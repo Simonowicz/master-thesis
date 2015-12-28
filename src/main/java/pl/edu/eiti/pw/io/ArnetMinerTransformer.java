@@ -47,7 +47,7 @@ public class ArnetMinerTransformer implements InputTransformer {
         while (line != null && (documentLimit == null || documentCount < documentLimit)) {
             parseLineAndAddToPaper(line, paper);
             if (paper.isComplete()) {
-                paperRepository.save(paper);
+                paperRepository.insert(paper);
                 documentCount++;
                 paper.clear();
             }
