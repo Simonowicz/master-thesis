@@ -100,4 +100,20 @@ public class Paper {
         abstractOfPaper = null;
         complete = false;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Paper paper = (Paper) o;
+
+        return index != null ? index.equals(paper.index) : paper.index == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return index != null ? index.hashCode() : 0;
+    }
 }

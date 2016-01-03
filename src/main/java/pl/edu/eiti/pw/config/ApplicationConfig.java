@@ -10,6 +10,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import pl.edu.eiti.pw.disambiguator.CubicClusteringCriterion;
+import pl.edu.eiti.pw.disambiguator.Disambiguator;
+import pl.edu.eiti.pw.disambiguator.DisambiguatorImpl;
+import pl.edu.eiti.pw.disambiguator.NumberOfClustersProvider;
+import pl.edu.eiti.pw.disambiguator.model.HiddenMarkovFieldsModelBuilder;
+import pl.edu.eiti.pw.disambiguator.model.ModelBuilder;
 import pl.edu.eiti.pw.io.ArnetMinerTransformer;
 import pl.edu.eiti.pw.io.InputTransformer;
 import pl.edu.eiti.pw.repository.PaperRepository;
@@ -49,5 +55,23 @@ public class ApplicationConfig {
     @Profile("write")
     public InputTransformer inputTransformer(@Value("${arnet.transformer.file}") String filePath, @Value("${arnet.document.limit}") Integer documentLimit) {
         return new ArnetMinerTransformer(filePath, documentLimit, this.paperRepository);
+    }
+
+    @Bean
+    @Profile("disambiguate")
+    public NumberOfClustersProvider numberOfClustersProvider() {
+        return new CubicClusteringCriterion();
+    }
+
+    @Bean
+    @Profile("disambiguate")
+    public ModelBuilder hiddenMarkovFieldsModelBuilder() {
+        return new HiddenMarkovFieldsModelBuilder();
+    }
+
+    @Bean
+    @Profile("disambiguate")
+    public Disambiguator disambiguator(@Value("${disambiguator.authorName}") String authorName) {
+        return new DisambiguatorImpl(numberOfClustersProvider(), this.paperRepository, hiddenMarkovFieldsModelBuilder(), authorName);
     }
 }
